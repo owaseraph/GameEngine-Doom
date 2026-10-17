@@ -1,35 +1,26 @@
-
 ifeq ($(OS),Windows_NT)
-    SDL_PLATFORM_DIR = win_sdl2
-    OUTPUT = game.exe
-    SDL_CFLAGS = -I./libs/$(SDL_PLATFORM_DIR)/include
-    SDL_LIBS = -L./libs/$(SDL_PLATFORM_DIR)/lib -lSDL2
+	SDL_PLATFORM_DIR=win_sdl2
+	OUTPUT=game.exe
 else
-    UNAME_S := $(shell uname -s)
-
-    ifeq ($(UNAME_S),Linux)
-        SDL_PLATFORM_DIR = linux_sdl2
-    endif
-
-    ifeq ($(UNAME_S),Darwin)
-        SDL_PLATFORM_DIR = macos_sdl2
-    endif
-
-    OUTPUT = game
-
-    SDL_CFLAGS = $(shell pkg-config --cflags sdl2)
-    SDL_LIBS = $(shell pkg-config --libs sdl2)
+	UNAME_S := $(shell uname -s)
+	ifeq ($(UNAME_S),Linux)
+		SDL_PLATFORM_DIR=linux_sdl2
+	endif
+	ifeq ($(UNAME_S),Darwin)
+		SDL_PLATFORM_DIR=macos_sdl2
+	endif
+	OUTPUT=game
 endif
 
-CC = gcc
-CFLAGS = -g -Wall -Wextra
-SRC = $(wildcard *.c)
+SRC=*.c
+INCLUDE=./libs/$(SDL_PLATFORM_DIR)/include
+LIB=./libs/$(SDL_PLATFORM_DIR)/lib
 
 all:
-	$(CC) $(CFLAGS) $(SRC) $(SDL_CFLAGS) $(SDL_LIBS) -o $(OUTPUT)
+	gcc $(SRC) -g -I$(INCLUDE) -L$(LIB) -lSDL2 -lm -o $(OUTPUT)
 
 clean:
-	rm -f $(OUTPUT)
+	rm $(OUTPUT)
 
-run: all
+run:
 	./$(OUTPUT)
